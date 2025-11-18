@@ -1,0 +1,3 @@
+pip install langchain-text-splitters
+pip install python-magic
+pip install python-dotenv

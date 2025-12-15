@@ -2,3 +2,6 @@ pip install langchain-text-splitters
 pip install langchain-nvidia-ai-endpoints
 pip install python-magic
 pip install python-dotenv
+pip install sentence-transformers
+pip install langchain-chroma
+pip install langchain_huggingface

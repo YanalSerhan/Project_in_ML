@@ -1,1 +1,0 @@
-# the extraction is done during chunking, so this file is intentionally left blank

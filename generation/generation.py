@@ -20,7 +20,7 @@ def generate_answer(query: str, docs: list, no_info: list, sql_results: list, KB
             
             sql_string += f"\nFor subquery: {subquery} ], the results are:\n"
             for row in sql_answer:
-                sql_string += f"course: {row['course']}, lecturer: {row['lecture']}, year: {row['year']}, semester: {row['semester']}, moed: {row['moed']}, avg: {row['avg']}\n"
+                sql_string += f"{row}\n"
 
             
         context_string += sql_string
@@ -40,9 +40,6 @@ def generate_answer(query: str, docs: list, no_info: list, sql_results: list, KB
         Do not hallucinate or invent information that does not appear in the passages.
 
         - Never hallucinate unavailable information.
-        - If the user says "המרצה הזה", "הקורס הזה", etc., resolve it from the conversation state.
-        - If state is None, say that the reference is unclear.
-
         If the user asks to compare or evaluate multiple lecturers/courses:
         - Summarize what information DOES appear in the passages.
         - Explicitly state when information about a lecturer or course is NOT present,
@@ -50,7 +47,7 @@ def generate_answer(query: str, docs: list, no_info: list, sql_results: list, KB
             or something like that.
         - Never answer “אין תשובה” or “לא מצאתי מידע” if partial information exists.
         - Given also the averages of the last 6 exams for each chunk in the format: avg, year, semester, moed.
-        - Answer the question in the langauge as the given query.
+        - Answer the question in the same langauge as the given query.
 
         Your goal is to provide the most helpful answer based solely on the known data.
         """

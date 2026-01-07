@@ -1,2 +1,17 @@
 .env
+plan.txt
 data/raw/
+/__pycache__
+/chunking/__pycache__
+/embedding/__pycache__
+/config/__pycache__
+/util/__pycache__
+/query_type/__pycache__
+/generation/__pycache__
+/knowledgeBase/__pycache__
+/loader/__pycache__
+/queryProcess/__pycache__
+/RAG/__pycache__
+/reranker/__pycache__
+/retrieval/__pycache__
+/sql_retrieval/__pycache__

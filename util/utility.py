@@ -1,4 +1,5 @@
 from config.DB_Connection import get_connection
+from collections import defaultdict
 
 def fetch_grades(course_name: str, lecturer_name: str):
     """
@@ -24,6 +25,28 @@ def fetch_grades(course_name: str, lecturer_name: str):
 
     return rows
 
+def fetch_kdams(course_name: str):
+    """
+    Fetch a list of grades (ints/floats) for a given course name and lecturer name.
+    """
+
+    sql = """
+        SELECT kdams
+        FROM Tkdams
+        WHERE name = %s;
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(sql, [course_name])
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return rows
+
 
 def docs2str(docs, grades_flag=False) -> str:
     """
@@ -39,17 +62,18 @@ def docs2str(docs, grades_flag=False) -> str:
         lecturer    = meta.get("lecturer", "Unknown Lecturer")
         date        = meta.get("date", "Unknown Date")
         grades      = "N/A"
+        #kdams     = "N/A"
         if grades_flag:
             grades = fetch_grades(course_name, lecturer)
+            #kdams = fetch_kdams(course_name)
         
-
         # header with metadata
         out_str += (
             f"course_name: {course_name}\n"
             f"lecturer: {lecturer}\n"
             f"date: {date}\n"
-
             f"grades: {grades}\n"
+            #f"required courses: {kdams}\n"
         )
 
         # the actual text
@@ -58,7 +82,6 @@ def docs2str(docs, grades_flag=False) -> str:
 
     return out_str
 
-from collections import defaultdict
 
 def reviews_from_sql(sql_result, docs_split):
     ids = set()

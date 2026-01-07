@@ -1,6 +1,9 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from sql_retrieval.table_router import cols_to_str
+from pathlib import Path
+import json
 load_dotenv()
 
 class SQL_converter:
@@ -12,67 +15,93 @@ class SQL_converter:
     )
 
 
-  def convert(self, query):
+  def convert(self, query: str, metadata: dict) -> str:
+    
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATA_PATH = BASE_DIR / "data" / "tables.json"
+
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+            tables = json.load(f)
+
+    for schema_doc in tables:
+        if schema_doc["table"] == metadata['table_name']:
+            cols = schema_doc["columns"]
+            break
+  
+    #cols = get_full_schema_by_table_name(metadata['table_name'], schema_documents)
+    cols = cols_to_str(cols)
+
     prompt = f"""
-      You are an expert SQL generator for an academic system.
-      Your task is to convert natural-language queries (Hebrew or English) into precise, safe, and accurate SQL queries.
+You are an expert SQL generator for an academic database.
+Your task is to convert natural-language queries (Hebrew or English) into precise, safe, and accurate SQL queries.
 
-      Important rules:
-      1. Use ONLY the following table:
-        Table: q
-          - id (INT)
-          - course (VARCHAR)
-          - lecture (VARCHAR)
-          - year (INT)
-          - semester (VARCHAR)
-          - moed (VARCHAR)
-          - avg (FLOAT)
-          - tag (VARCHAR)
-          - proj (VARCHAR)
-          - rank (INT)
+You are given:
+1. The user query
+2. Table + schema
+3. Constraints and semantic rules
 
-      2. NEVER use AVG() on avg — it is already an average.
-        When the user asks for “highest average”, return the single row where avg is the highest.
+You MUST follow ALL rules strictly.
 
-      3. If the user ask for high number (e.g. > 10) of results, use LIMIT 10 to restrict the number of returned rows.
-
-      4. If the user mentions a course name (e.g., "מבני נתונים"), search it using:
-          WHERE course = 'מבני נתונים'.
-         If the user mentions a lecturer name (e.g., "אורן וימן"), search it using:
-          WHERE lecture = 'אורן וימן'.
-
-      5. If the user asks about:
-        - a year → include `WHERE year = X`
-        - moed → include `WHERE moed = 'a'`, 'b', etc.
-        - "highest" / "biggest" / "top" → use ORDER BY DESC + LIMIT 1
-        - "lowest" → use ORDER BY ASC + LIMIT 1
-
-      6. Output **ONLY SQL code**, no explanations, no comments.
-
-      7. The SQL must be fully executable in MySQL.
-
-      8. Always start the query with: SELECT * FROM q unless specified otherwise.
-      if specified otherwise, use Escaping with backticks on reserved keywords like `year`, `avg`, `rank`.
-
-      Your job: Convert the user query into a **single, correct SQL SELECT statement** following these rules.
+TABLE SCHEMA:
+Table name: {metadata['table_name']}
+Table type: {metadata['table_type']}
+Columns:
+{cols}
 
 
-      User question:
-      "{query}"
+RULES:
 
-      Return only SQL code nothing else.
-    """
+1. Generate exactly ONE SQL SELECT statement.
+   - No comments
+   - No explanations
+   - No multiple queries
+
+2. The SQL must be valid MySQL.
+
+3. Reserved keywords MUST be escaped using backticks:
+   `year`, `rank`, `avg`
+
+4. Default SELECT behavior:
+   - Use SELECT * unless the user explicitly asks for specific fields.
+
+5. Aggregations:
+   - Only apply aggregation functions (COUNT, MIN, MAX, etc.) if explicitly requested.
+   - NEVER aggregate a column that is already aggregated (e.g., do NOT use AVG(avg)).
+
+6. Ordering and limits:
+   - Only use ORDER BY and LIMIT if explicitly requested by the user.
+   - "highest", "top", "maximum" → ORDER BY DESC
+   - "lowest", "minimum" → ORDER BY ASC
+
+7. Filtering rules:
+   - Use exact equality for named entities (e.g., course names, lecturer names).
+   - Use WHERE clauses only when the user specifies filters.
+
+8. Time semantics:
+   - NEVER use CURRENT_DATE, NOW(), or system time.
+   - If the user refers to "previous years" or "שנים קודמות",
+     interpret this as a comparison relative to the latest available year in the data:
+       `year < (SELECT MAX(year) FROM <relevant table> [WITH SAME FILTERS])`
+
+9. Safety:
+    - Do not generate UPDATE, DELETE, INSERT, DROP, or ALTER statements.
+
+USER QUESTION:
+"{query}"
+
+Return ONLY the SQL query. Nothing else.
+"""
+    
     response = self.client.chat.completions.create(
         model=self.model_name,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.2,
         top_p=0.7,
-        max_tokens=2048,
+        max_tokens=4096,
         stream=True
     )
     result = ""
     for chunk in response:
       if chunk.choices[0].delta.content is not None:
-        # print(chunk.choices[0].delta.content, end="")
         result += chunk.choices[0].delta.content
     return result

@@ -22,6 +22,7 @@ import json
 from queryProcess.query_enhancement import query_enhancement
 from sql_retrieval.run_sql import run_sql_query
 from sql_retrieval.clean_sql import clean_result
+from sql_retrieval.table_router import route_query_to_table
 
 
 def build_vector_filters(metadata):
@@ -113,7 +114,7 @@ def semantic_search(subquery, vectorstore, metadata):
         )
 
 
-def enhanced_retrieve(query, query_enhancer, vectorstore, queryTyper, sql_converter, conv_state=None, slot_filler=None):
+def enhanced_retrieve(query, query_enhancer, vectorstore, queryTyper, sql_converter, conv_state=None, slot_filler=None, db_schemas=None):
     # --- ENHANCEMENT ---
     rewritten, metadata, conv_state = query_enhancement(query, query_enhancer, conv_state, slot_filler)
     splitted = query_enhancer.split_query(rewritten)
@@ -137,7 +138,14 @@ def enhanced_retrieve(query, query_enhancer, vectorstore, queryTyper, sql_conver
         print(f"Subquery: {subquery} | Type: {qtype}")
         if qtype == "sql":
             print("Processing SQL subquery:", subquery)
-            sql_query = sql_converter.convert(subquery)
+
+            # decide which table to use, get the metadata
+            table_metadata = route_query_to_table(subquery, db_schemas)
+            print("Routed to table metadata:", table_metadata)
+
+            # send the metadata to sql_converter along with the subquery
+
+            sql_query = sql_converter.convert(subquery, table_metadata)
             print("Generated SQL:", sql_query)
             cleaned_sql = clean_result(sql_query)
             print("Cleaned SQL:", cleaned_sql)

@@ -26,7 +26,9 @@ class QueryEnhancer:
         prompt = f"""
           Rewrite the following user query to be clearer, more explicit, and easier for a retrieval system to understand.
           Keep the meaning exactly the same. Do not add new information or assumptions.
-          Make the query make sense even if it is ambiguous because the user might make mistakes.
+          If the query is ambiguous, rewrite it in a neutral and generic way without resolving the ambiguity.
+          Do NOT guess missing details.
+          Never infer ownership, perspective, or subject unless it explicitly appears in the user query.
           Fix spelling mistakes and expand abbreviations only when the meaning is obvious.
           Some lecturer names comes with their surrnames and some don't; keep them as it is.
           Keep the rewritten query short and focused.

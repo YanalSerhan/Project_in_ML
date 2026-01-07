@@ -1,0 +1,48 @@
+[
+  {
+    "table": "q",
+    "type": "grades",
+    "content": "This table stores historical course grade statistics by academic year and semester. It is used to answer questions about grades, average grades, performance trends over years, comparisons between years or semesters, highest or lowest averages, ranking of courses, and historical grade data. Typical questions include asking about grades in previous years, average grade in a course, course difficulty, trends over time, and course rankings.",
+    "columns": [
+      { "col": "id", "description": "Unique identifier for the record" },
+      { "col": "course", "description": "Course name" },
+      { "col": "lecture", "description": "Lecturer name" },
+      { "col": "year", "description": "Academic hebrew year" },
+      { "col": "semester", "description": "Semester in which the course was taught(A/B/C)" },
+      { "col": "moed", "description": "Exam session(a/b/c/f)" },
+      { "col": "avg", "description": "Average grade for the course in that year and semester" },
+      { "col": "tag", "description": "Course category(duty/choose)" },
+      { "col": "proj", "description": "Whether the course includes a project component" }
+    ],
+    "example_queries": [
+      "מה הציון הממוצע בקורס מבני נתונים",
+      "מה הציונים בשנים קודמות של מבני נתונים",
+      "איך השתנה הציון הממוצע בקורס לאורך השנים",
+      "איזה קורסים עם הציון הממוצע הכי נמוך",
+      "דירוג קורסים לפי ממוצע ציונים"
+    ],
+    "negative_scope": [
+      "This table does not contain information about course prerequisites",
+      "This table does not describe relationships between courses"
+    ]
+  },
+  {
+    "table": "tkdams",
+    "type": "prerequisites",
+    "content": "This table stores prerequisite (kdam) relationships between courses. It is used to answer questions about which courses must be taken before another course, required background courses, prerequisite chains, and course dependency structures. Typical questions include asking which courses are required before a given course or what prerequisites a course has.",
+    "columns": [
+      { "col": "name", "description": "Course name" },
+      { "col": "kdams", "description": "List of prerequisite courses required before taking the course" }
+    ],
+    "example_queries": [
+      "מה הקורסים שצריך לפני מבני נתונים",
+      "מהם הקדמים של אלגוריתמים",
+      "איזה קורסים חובה לפני קורס מסוים",
+      "מה צריך ללמוד לפני קורס מערכות הפעלה"
+    ],
+    "negative_scope": [
+      "This table does not contain grades or average grade information",
+      "This table does not store performance or ranking data"
+    ]
+  }
+]

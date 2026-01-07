@@ -45,9 +45,14 @@ vectorstore = Chroma(
     embedding_function=embeddings
 )
 
+db_schemas = Chroma(
+    persist_directory="db_schemas",
+    embedding_function=embeddings
+)
+
 query_enhancer = QueryEnhancer("deepseek-ai/deepseek-v3.1")
 query_typer = queryType()
-sql_converter = SQL_converter(model_name="microsoft/phi-3.5-mini-instruct")
+sql_converter = SQL_converter("deepseek-ai/deepseek-v3.1")
 KB = ConversationState()
 slot_filler = SlotFiller()
 
@@ -72,7 +77,8 @@ class RAGResponse(BaseModel):
 @app.post("/rag", response_model=RAGResponse)
 async def rag_endpoint(req: QueryRequest):
     answer = RAG(
-        req.query, query_enhancer, vectorstore, courses, lecturers, query_typer, sql_converter, conv_state=KB, slot_filler=slot_filler
+        req.query, query_enhancer, vectorstore, courses, lecturers, query_typer, sql_converter, conv_state=KB,
+        slot_filler=slot_filler, db_schema=db_schemas
     )
 
     return RAGResponse(

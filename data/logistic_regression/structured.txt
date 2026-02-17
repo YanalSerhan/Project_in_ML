@@ -1,0 +1,95 @@
+What are the prerequisites for Algorithms?
+List all prerequisites of Data Structures.
+Is Linear Algebra required before Machine Learning?
+Which courses require Calculus I?
+Show the prerequisite chain for Artificial Intelligence.
+Does Operating Systems require Data Structures?
+What must I take before enrolling in Databases?
+Which courses depend on Discrete Mathematics?
+Is Probability a prerequisite for Machine Learning?
+List courses that have no prerequisites.
+What is the average grade in Algorithms in 2023?
+Show the average grade for Data Structures in semester A.
+Which course had the highest average grade last year?
+What was the lowest average grade in 2022?
+Compare the average grade of Databases between 2021 and 2022.
+Rank courses by average grade in 2023.
+Show grade trends for Operating Systems.
+How many students failed Linear Algebra in 2023?
+What is the grade distribution for Machine Learning?
+Which semester had the highest average in Algorithms?
+Show historical grade statistics for Computer Networks.
+What was the median grade in Artificial Intelligence?
+List courses ordered by failure rate.
+Which course improved most in average grade over the years?
+What is the average grade in Databases?
+Show grade statistics for Discrete Math.
+Compare Machine Learning grades across semesters.
+Which course had the biggest drop in average grade?
+Show the minimum grade recorded in Algorithms.
+What is the maximum grade in Data Structures?
+Does Deep Learning require Linear Algebra?
+Is Calculus I mandatory before Physics II?
+Which advanced courses require Probability?
+List all courses that require Algorithms.
+What are the formal prerequisites of Operating Systems?
+Is Discrete Math required for Cryptography?
+Which courses list Data Structures as a prerequisite?
+Show the prerequisite graph for Machine Learning.
+What is the prerequisite structure of Artificial Intelligence?
+What was the average grade in Networks in 2022?
+Which course had the highest failure rate last year?
+List courses with average grade below 70.
+Which courses had average grade above 85?
+Show average grades per semester for Algorithms.
+How many students passed Databases in 2023?
+Which semester had the lowest average grade?
+What is the average performance in Machine Learning?
+Compare grades of Algorithms and Data Structures.
+Show grade history of Artificial Intelligence.
+Is Linear Algebra officially required for Deep Learning?
+What courses must be completed before AI?
+List dependency relationships for Cryptography.
+Which course requires the most prerequisites?
+Show all direct prerequisites of Algorithms.
+Show indirect prerequisites of Machine Learning.
+What is the academic requirement chain for AI?
+Which courses have Calculus as prerequisite?
+What are the official prerequisite requirements for Networks?
+Which courses have no dependency requirements?
+Show average grades for all courses in 2023.
+Which course had the highest average in semester B?
+List courses sorted by average grade descending.
+What is the grade trend of Databases over 3 years?
+Which year had the best performance in Algorithms?
+Show the failure rate of Operating Systems.
+Which courses improved in average grade over time?
+List courses where average grade decreased.
+Show ranking of courses by median grade.
+What was the performance in Linear Algebra last semester?
+How many students enrolled in Algorithms in 2023?
+Which courses had the lowest median grade?
+Show grade comparison between semester A and B.
+List all course prerequisite pairs.
+Which courses depend directly on Calculus II?
+What prerequisites are required for Networks?
+Is Probability required before Statistics?
+Show the formal dependency structure of courses.
+Which courses require Machine Learning?
+List courses with exactly one prerequisite.
+Which course has the longest prerequisite chain?
+Show prerequisite relationships for Databases.
+Which courses depend on Linear Algebra?
+Is Data Structures required for Operating Systems?
+Show grade averages for 2021.
+Which courses have average grade below 60?
+Show yearly grade averages for AI.
+Which course had the highest performance increase?
+What is the lowest grade recorded in Databases?
+Show the grade distribution for Algorithms.
+Compare failure rates between courses.
+Which courses require Discrete Math?
+Show official requirements for Cryptography.
+Which course has the highest average historically?
+List courses ranked by difficulty based on grades.
+Show structured grade statistics for Networks.

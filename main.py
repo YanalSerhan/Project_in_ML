@@ -4,7 +4,7 @@ from langchain_chroma import Chroma
 
 from loader.load_reviews import load_reviews
 from loader.load_ids import load_ids
-from embedding.embedder import get_e5_embeddings, add_e5_prefix_to_docs
+from embedding.embedder import get_e5_embeddings, E5Embeddings
 from chunking.chunker import chunk_docs
 from queryProcess.enhancer import QueryEnhancer
 from knowledgeBase.slot_filler import SlotFiller
@@ -39,6 +39,7 @@ courses, lecturers = load_ids()
 #docs_split = chunk_docs(docs)
 #docs_split = add_e5_prefix_to_docs(docs_split)
 embeddings = get_e5_embeddings()
+embeddings_ = E5Embeddings()
 
 vectorstore = Chroma(
     persist_directory="chroma_db",
@@ -50,11 +51,16 @@ db_schemas = Chroma(
     embedding_function=embeddings
 )
 
+classification_vectorstore = Chroma(
+    persist_directory="classification_db",
+    embedding_function=embeddings_
+)
+
 query_enhancer = QueryEnhancer("deepseek-ai/deepseek-v3.1")
-query_typer = queryType()
+#query_typer = queryType("deepseek-ai/deepseek-v3.1")
 sql_converter = SQL_converter("deepseek-ai/deepseek-v3.1")
 KB = ConversationState()
-slot_filler = SlotFiller()
+#slot_filler = SlotFiller()
 
 # --------- API Schemas ---------
 
@@ -77,8 +83,8 @@ class RAGResponse(BaseModel):
 @app.post("/rag", response_model=RAGResponse)
 async def rag_endpoint(req: QueryRequest):
     answer = RAG(
-        req.query, query_enhancer, vectorstore, courses, lecturers, query_typer, sql_converter, conv_state=KB,
-        slot_filler=slot_filler, db_schema=db_schemas
+        req.query, query_enhancer, vectorstore, classification_vectorstore, sql_converter, conv_state=KB,
+        db_schema=db_schemas
     )
 
     return RAGResponse(

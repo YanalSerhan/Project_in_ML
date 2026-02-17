@@ -47,7 +47,7 @@ DECISION RULES (VERY IMPORTANT):
 
 - Focus ONLY on the MAIN intent of the query.
 - If the main intent is answerable using structured data → "sql"
-- Ignore secondary or unsupported modifiers (e.g., lecturer, opinions, context)
+- Ignore secondary or unsupported modifiers (e.g., lecturer, time, ...)
 - Do NOT require that all constraints be satisfiable.
 - If the query requires explanation or subjective judgment → "semantic"
 - If unsure, prefer "sql"
@@ -71,7 +71,7 @@ User query:
         )
         result = ""
         for chunk in response:
-          if chunk.choices[0].delta.content is not None:
+          if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content is not None:
             # print(chunk.choices[0].delta.content, end="")
             result += chunk.choices[0].delta.content
         return result.strip()

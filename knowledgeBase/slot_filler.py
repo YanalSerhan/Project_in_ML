@@ -35,6 +35,7 @@ class SlotFiller:
         self.model_name = model_name
 
     def extract(self, query: str) -> dict:
+        print("Entered Slot Filler File")
         response = self.client.chat.completions.create(
             model=self.model_name,
             messages=[{"role": "user", "content": EXTRACTION_PROMPT + "\nUser query:\n" + query}],
@@ -46,7 +47,7 @@ class SlotFiller:
         )
         result = ""
         for chunk in response:
-          if chunk.choices[0].delta.content is not None:
+          if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content is not None:
             # print(chunk.choices[0].delta.content, end="")
             result += chunk.choices[0].delta.content
         response = result.strip()
@@ -60,4 +61,5 @@ class SlotFiller:
         for key in ["courses", "lecturers", "years", "semesters"]:
             data.setdefault(key, [])
 
+        print("finished Slot Filler File")
         return data

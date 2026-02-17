@@ -102,6 +102,6 @@ Return ONLY the SQL query. Nothing else.
     )
     result = ""
     for chunk in response:
-      if chunk.choices[0].delta.content is not None:
+      if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content is not None:
         result += chunk.choices[0].delta.content
     return result

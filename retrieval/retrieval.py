@@ -19,7 +19,7 @@ This approach ensures that the most relevant chunks are considered for final sel
 
 #from bm25_retriever import BM25Retriever
 import json
-from queryProcess.query_enhancement import query_enhancement
+from queryProcess.query_enhancement import query_enhancement, split_query, clean_json_query
 from sql_retrieval.run_sql import run_sql_query
 from sql_retrieval.clean_sql import clean_result
 from sql_retrieval.table_router import route_query_to_table
@@ -113,11 +113,27 @@ def semantic_search(subquery, vectorstore, metadata):
             filter=where
         )
 
+def classify_query(query: str, classification_vectorstore):
+    results = classification_vectorstore.similarity_search_with_score(query, k=1)
 
-def enhanced_retrieve(query, query_enhancer, vectorstore, queryTyper, sql_converter, conv_state=None, slot_filler=None, db_schemas=None):
+    if not results:
+        return {"route": "semantic", "score": None, "table": None}
+
+    doc, _ = results[0]
+
+    # return the same type as the closest query
+    return doc.metadata["route"]
+
+def enhanced_retrieve(query, query_enhancer, vectorstore, classification_vectorstore, sql_converter, conv_state=None, db_schemas=None):
+    print("Entered enhanced_retrieve")
+    
     # --- ENHANCEMENT ---
-    rewritten, metadata, conv_state = query_enhancement(query, query_enhancer, conv_state, slot_filler)
-    splitted = query_enhancer.split_query(rewritten)
+    rewritten, metadata, conv_state = query_enhancement(query, query_enhancer, conv_state)
+    #splitted = query_enhancer.split_query(rewritten)
+    
+    splitted = split_query(rewritten)
+    splitted = clean_json_query(splitted)
+    splitted = json.loads(splitted)
 
     #extracted = slot_filler.extract(rewritten)
     #conv_state.update(extracted)
@@ -128,13 +144,12 @@ def enhanced_retrieve(query, query_enhancer, vectorstore, queryTyper, sql_conver
     print("metadata:", metadata)
     print("splitted:", splitted)
 
-    splitted = json.loads(splitted)
     results_valid = []
     sql_results = []
     results_invalid = []
 
     for subquery in splitted:
-        qtype = queryTyper.determine(subquery)
+        qtype = classify_query(subquery, classification_vectorstore)
         print(f"Subquery: {subquery} | Type: {qtype}")
         if qtype == "sql":
             print("Processing SQL subquery:", subquery)

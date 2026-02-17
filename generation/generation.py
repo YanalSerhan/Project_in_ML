@@ -1,9 +1,12 @@
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
 from util.utility import docs2str
 
 def generate_answer(query: str, docs: list, no_info: list, sql_results: list, KB) -> str:
+    print("Entered Generation File")
+    
     # 1. Convert documents to a single context string
     context_string = ""
 
@@ -72,11 +75,11 @@ def generate_answer(query: str, docs: list, no_info: list, sql_results: list, KB
     "semester": KB.semesters if KB else None
     })
     """
+    @retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5), retry=retry_if_exception_type(Exception))
+    def _invoke_chain_with_retry(context, query):
+        return chain.invoke({"context": context, "question": query})
     
-    answer = chain.invoke({
-    "context": context,
-    "question": query
-    })
+    answer = _invoke_chain_with_retry(context, query)
     return answer
 
 

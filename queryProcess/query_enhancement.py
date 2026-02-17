@@ -1,5 +1,6 @@
 import re
 import json
+from openai import OpenAI
 
 def clean_query(query):
   # remove nikud
@@ -10,21 +11,69 @@ def clean_query(query):
   query = re.sub(r"\s+", " ", query).strip()
   return query
 
-def query_enhancement(query, query_enhancer, conv_state=None, slot_filler=None):
+def query_enhancement(query, query_enhancer, conv_state=None):
+  print("Entered query_enhancement")
   # clean query
   query = clean_query(query)
 
-  extracted = slot_filler.extract(query)
+  result = query_enhancer.rewrite_and_extract(query)
+  result = json.loads(result)
+  rewritten = result["rewritten_query"]
+  metadata = {"course": result["course"], "lecturer": result["lecturer"]}
+
   if conv_state:
-    conv_state.update(extracted)
-
-  # rewrite the query
-  rewritten = query_enhancer.rewrite(query, conv_state)
-
-  # extract metadata
-  metadata = query_enhancer.keyword_extraction(rewritten)
-
-  # load it as json
-  metadata = json.loads(metadata)
-
+    conv_state.update(metadata)
+  
   return rewritten, metadata, conv_state
+
+
+def split_query(query: str) -> str:
+  prompt = f"""
+        You are a helpful assistant that prepares queries that will be sent to a search component.
+        Sometimes, these queries are very complex.
+        Your job is to simplify complex queries into multiple queries that can be answered in isolation to eachother.
+
+        - Only split the query when the user explicitly mentions MULTIPLE distinct entities (e.g., two lecturers, two courses, multiple people, multiple items).
+        - If the query mentions only ONE entity and ONE topic, do NOT split — return the original query as a single element.
+        - Use the same language as the query.
+        - Make the questions make sense.
+
+        Rules:
+        1. If the query contains multiple lecturers → produce one sub-query per lecturer.
+        2. If the query contains multiple courses → produce one sub-query per course.
+        3. If there is only ONE lecturer and ONE course → return the query unchanged.
+        4. Output format must be ONLY a JSON list of strings.
+
+
+        Examples
+        1. Query: Did Microsoft or Google make more money last year?
+          ['How much profit did Microsoft make last year?', 'How much profit did Google make last year?']
+        2. Query: What is the capital of France?
+          ['What is the capital of France?']
+        3. Query: {query}
+          ['<subquery>', ...]
+        """
+
+  client = OpenAI()
+  response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+       {"role": "user", "content": prompt}
+    ],
+    temperature=0.7
+)
+
+  res = response.choices[0].message.content
+  return res
+
+def clean_json_query(query):
+  """
+  format: 
+    ```json
+        ["<subquery>", ...]
+    ```
+  """
+  query = query.replace("```", "")
+  query = query.replace("json", "")
+  query = query.replace("\n", "")
+  return query

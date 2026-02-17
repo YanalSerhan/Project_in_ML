@@ -14,6 +14,7 @@ def rerank_documents(query: str, documents: list[Document], model_name: str = "n
     Returns:
         A list of Document objects, reranked by relevance.
     """
+    print("Entered Reranker File")
     if not documents:
         return []
     reranker = NVIDIARerank(model=model_name)

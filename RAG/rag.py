@@ -1,5 +1,5 @@
 from retrieval.retrieval import enhanced_retrieve
-from generation.generation import generate_answer
+from generation.answerGenerator import generate_answer
 from reranker.reranker import rerank_documents
 
 def RAG(query, query_enhancer, vectorstore, classification_db, sql_converter, conv_state=None, db_schema=None):
@@ -13,5 +13,6 @@ def RAG(query, query_enhancer, vectorstore, classification_db, sql_converter, co
   reranked_docs = []
   if results_valid:
     reranked_docs = rerank_documents(query, results_valid[0])
+  #answer = generate_answer(query, reranked_docs, results_invalid, sql_results, KB)
   answer = generate_answer(query, reranked_docs, results_invalid, sql_results, KB)
   return answer

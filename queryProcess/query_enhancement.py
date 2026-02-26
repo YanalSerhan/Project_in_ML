@@ -1,6 +1,7 @@
 import re
 import json
 from openai import OpenAI
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 def clean_query(query):
   # remove nikud
@@ -26,7 +27,7 @@ def query_enhancement(query, query_enhancer, conv_state=None):
   
   return rewritten, metadata, conv_state
 
-
+@retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5), retry=retry_if_exception_type(Exception))
 def split_query(query: str) -> str:
   prompt = f"""
         You are a helpful assistant that prepares queries that will be sent to a search component.

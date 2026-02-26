@@ -1,6 +1,8 @@
 import os
+import json # נוסף כדי לאפשר קריאה של קובץ ה-JSON
 from openai import OpenAI
 from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
+import re # נוסף עבור מנגנון ה-Regex להחלפת שמות הקורסים
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -16,7 +18,29 @@ class QueryEnhancer:
             base_url="https://integrate.api.nvidia.com/v1"
         )
         self.model_name = model_name
+        # 1. טעינת המיפוי בעת יצירת האובייקט
+        self.nickname_map = self._load_nicknames()
 
+    def _load_nicknames(self):
+        """פונקציית עזר לטעינת הכינויים מתיקיית data"""
+        path = os.path.join("data", "course_nicknames.json")
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            print(f"Warning: {path} not found. Normalization disabled.")
+            return {}
+
+    def normalize_query(self, query: str) -> str:
+        """מחליפה כינויים כמו 'חומרה' בשמות רשמיים כמו 'מבוא לחמרה'"""
+        normalized = query
+        for formal_name, nicknames in self.nickname_map.items():
+            for nick in nicknames:
+                # שימוש ב-Regex כדי להחליף מילים שלמות בלבד
+                pattern = rf"\b{re.escape(nick)}\b"
+                normalized = re.sub(pattern, formal_name, normalized)
+        return normalized
+        
     @retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5), retry=retry_if_exception_type(Exception))
     def _call_llm(self, prompt: str):
         response = self.client.chat.completions.create(
@@ -38,6 +62,9 @@ class QueryEnhancer:
         """
         Sends the query to an NIM model to get a rewritten/expanded version.
         """
+        # החלפת כינויים לפני ה-Rewrite
+        query = self.normalize_query(query)
+
         print("Entered rewrite")
         state_info = ""
         if KB:
@@ -91,6 +118,9 @@ class QueryEnhancer:
         """
         Sends the query to an NIM model to get a rewritten/expanded version.
         """
+        # החלפת כינויים לפני חילוץ מילות מפתח
+        query = self.normalize_query(query)
+
         print("Entered keyword_extraction")
         prompt = f"""
         You are an information extraction system.
@@ -136,6 +166,9 @@ class QueryEnhancer:
         it splits this into multiple queries:
         "Q1 revenue," "Q2 revenue," "Q1 user growth," and "Q2 user growth."
         """
+        # החלפת כינויים לפני פיצול השאילתה
+        query = self.normalize_query(query)
+
         print("Entered split_query")
         prompt = f"""
         You are a helpful assistant that prepares queries that will be sent to a search component.
@@ -182,6 +215,9 @@ class QueryEnhancer:
     
     @retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5), retry=retry_if_exception_type(Exception))
     def rewrite_and_extract(self, query: str):
+      # החלפת כינויים בתחילת הפונקציה
+      query = self.normalize_query(query)
+
       state_info = ""
       prompt = f"""
 You are a query rewriting and information extraction system.

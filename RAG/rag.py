@@ -1,6 +1,6 @@
 from retrieval.retrieval import enhanced_retrieve
-from generation.generation import generate_answer
 from reranker.reranker import rerank_documents
+from generation.answerGeneration import generate_answer
 
 def RAG(query, query_enhancer, vectorstore, classification_db, sql_converter, conv_state=None, db_schema=None):
   print("Entered RAG File")

@@ -21,7 +21,7 @@ This system processes dual-intent queries by combining **Unstructured Retrieval*
 2.  **Classification**: Routes the query based on vector similarity against a known dataset.
 3.  **SQL Path**: Table routing and SQL generation for factual data.
 4.  **Semantic Path**: ChromaDB retrieval with hard metadata filtering followed by neural reranking.
-5.  **Generation**: Final response synthesis using DeepSeek-V3.
+5.  **Generation**: Final response synthesis.
 
 
 ## Setup & Installation
@@ -41,18 +41,30 @@ This system processes dual-intent queries by combining **Unstructured Retrieval*
     DB_PASSWORD=your_db_password
     MYSQL_DB="Project_ML_DB"
     ```
+4.  **Database Setup (One-time Only)**:
+    Before running the system for the first time, you must initialize the local MySQL database with the project data. 
+    * **Ensure MySQL is running** on your local machine.
+    * **Create the Database**: Create a database with the name specified in your `.env`.
+    * **Run the Initialization Script**: Execute the script to create tables and import data from JSON sources.
+    ```bash
+    code here (from json2sql)
+    ```
 
 ## Execution (How to Run)
 To run the application, you need to open two separate terminals:
+
+0. **Step 0: Create a Virtual Environment (Recommended)**
+
+   Creating a virtual environment ensures that the project dependencies do not interfere with other Python projects on your system.
+   ```bash
+   python -m venv venv
+   .\venv\Scripts\activate
+   ```
 1. **Step 1: Start the Backend Server**
    ```bash
    uvicorn main:app --reload
 2. **Step 2: Start the UI (Streamlit)**
    ```bash
    streamlit run ui.py
-
-## Authors
-* **Claude Abinader** 331181909
-* **Yanal Serhan** 327680492
 
 ---

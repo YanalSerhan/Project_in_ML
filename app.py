@@ -350,11 +350,11 @@ div[data-testid="stSidebar"] div[data-testid="stHorizontalBlock"] .stButton > bu
 # ─────────────────────────────────────────────────────────
 @st.cache_resource
 def load_resources():
-    embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-large")
+    #embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-large")
     embeddings_class = E5Embeddings()
-    vectorstore      = Chroma(persist_directory="chroma_db",       embedding_function=embeddings)
+    vectorstore      = Chroma(persist_directory="chroma_db",       embedding_function=embeddings_class)
     classification_db= Chroma(persist_directory="classification_db", embedding_function=embeddings_class)
-    db_schemas       = Chroma(persist_directory="db_schemas",      embedding_function=embeddings)
+    db_schemas       = Chroma(persist_directory="db_schemas",      embedding_function=embeddings_class)
     model_id = "deepseek-ai/deepseek-v3.2"
     enhancer = QueryEnhancer(model_id)
     sql_tool = SQL_converter(model_id)

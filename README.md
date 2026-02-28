@@ -43,6 +43,7 @@ This system processes dual-intent queries by combining **Unstructured Retrieval*
     ```
 4.  **Database Setup (One-time Only)**:
    Before running the system, you must initialize the knowledge base by processing the raw data into vector databases.
+   Run the notebook 'create_vectorstores.ipynb'
 
 ## Execution (How to Run)
 1. **Step 1: Create a Virtual Environment (Recommended)**

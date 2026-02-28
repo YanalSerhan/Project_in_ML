@@ -1,6 +1,8 @@
 .env
 plan.txt
 classification_db.tgz
+vectorstore_index.tgz
+db_schemas.tgz
 data/raw/
 /__pycache__
 */__pycache__

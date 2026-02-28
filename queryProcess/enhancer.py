@@ -181,8 +181,8 @@ class QueryEnhancer:
         return result
     
     @retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5), retry=retry_if_exception_type(Exception))
-    def rewrite_and_extract(self, query: str):
-      state_info = ""
+    def rewrite_and_extract(self, query: str, conv_state_str: str) -> str:
+
       prompt = f"""
 You are a query rewriting and information extraction system.
 
@@ -201,13 +201,14 @@ REWRITING RULES:
 - Example abbreviations: algo -> algorithms, DS -> data structure.
 - Some lecturer names come with surnames and some don't; keep them exactly as written.
 - Keep the rewritten query short and focused.
-- If the query has references like "the lecturer," "this course," etc., which are ambiguous without context, try to infer them from the knowledge base: {state_info}. If you cannot infer them, keep them as is.
+- If the query has references like "the lecturer," "this course," etc., which are ambiguous without context, try to infer them from the knowledge base: {conv_state_str}. If you cannot infer them, keep them as is.
 - Do NOT answer the query.
 - Do NOT provide explanations.
 - Return the output in the same language as the input.
 
 EXTRACTION RULES:
 - Extract ONLY course name(s) and lecturer name(s) explicitly mentioned in the query.
+- Extract ONLY course names and lecturer names. Not 'course AI', only 'AI' if that's how it's mentioned.
 - Do NOT infer or guess anything.
 - If no course is mentioned, return an empty list.
 - If no lecturer is mentioned, return an empty list.

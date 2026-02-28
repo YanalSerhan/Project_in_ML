@@ -19,11 +19,25 @@ This approach ensures that the most relevant chunks are considered for final sel
 
 #from bm25_retriever import BM25Retriever
 import json
+import os
 from queryProcess.query_enhancement import query_enhancement, split_query, clean_json_query
 from sql_retrieval.run_sql import run_sql_query
 from sql_retrieval.clean_sql import clean_result
 from sql_retrieval.table_router import route_query_to_table
 
+# 1. Get the absolute path to the directory containing THIS script (query_enhancement)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Build the path: go up one level ('..'), then into the 'nicknames' folder
+NICKNAMES_FILE_PATH = os.path.join(CURRENT_DIR, '..', 'nicknames', 'course_nicknames.json')
+
+# 3. Safely load the file, with a fallback just in case the path is slightly off
+try:
+    with open(NICKNAMES_FILE_PATH, 'r', encoding='utf-8') as f:
+        NICKNAMES_MAP = json.load(f)
+except FileNotFoundError:
+    print(f"⚠️ Warning: Could not find the file at {NICKNAMES_FILE_PATH}")
+    NICKNAMES_MAP = {} # Fallback to empty dict so the code doesn't completely crash
 
 def build_vector_filters(metadata):
     """
@@ -74,7 +88,7 @@ def semantic_search(subquery, vectorstore, metadata):
     if not metadata:
         return vectorstore.similarity_search(
             query=subquery,
-            k=10,
+            k=15,
         )
 
     courses = metadata.get("course", [])
@@ -85,7 +99,9 @@ def semantic_search(subquery, vectorstore, metadata):
     # Build individual expressions (each is a separate where-clause)
     for course in courses:
         if course in subquery:
-            exprs.append({"course_name": {"$eq": course}})
+            # filter by nickname
+            official_name = NICKNAMES_MAP.get(course, course)
+            exprs.append({"course_name": {"$eq": official_name}})
 
     for lecturer in lecturers:
         if lecturer in subquery:
@@ -95,7 +111,7 @@ def semantic_search(subquery, vectorstore, metadata):
     if not exprs:
         return vectorstore.similarity_search(
             query=subquery,
-            k=10,
+            k=15,
         )
     
 
@@ -109,7 +125,7 @@ def semantic_search(subquery, vectorstore, metadata):
     # Perform search with filter, return top 10 results
     return vectorstore.similarity_search(
             query=subquery,
-            k=10,
+            k=15,
             filter=where
         )
 

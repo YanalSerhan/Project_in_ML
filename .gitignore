@@ -4,3 +4,5 @@ classification_db.tgz
 data/raw/
 /__pycache__
 */__pycache__
+/chat_history/
+/chat_history/*

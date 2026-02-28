@@ -12,12 +12,20 @@ def clean_query(query):
   query = re.sub(r"\s+", " ", query).strip()
   return query
 
+def to_prompt_str(knowledge_base: dict):
+    prompt_str = ""
+    for key, values in knowledge_base.items():
+        prompt_str += f"{key.capitalize()} mentioned in conversation: {values}\n"
+        prompt_str += f"Most recent {key} (used for vague references): {values[-1] if values else 'None'}\n"
+    return prompt_str
+
 def query_enhancement(query, query_enhancer, conv_state=None):
   print("Entered query_enhancement")
   # clean query
   query = clean_query(query)
 
-  result = query_enhancer.rewrite_and_extract(query)
+  conv_state_str = to_prompt_str(conv_state) if conv_state else ""
+  result = query_enhancer.rewrite_and_extract(query, conv_state_str)
   result = json.loads(result)
   rewritten = result["rewritten_query"]
   metadata = {"course": result["course"], "lecturer": result["lecturer"]}

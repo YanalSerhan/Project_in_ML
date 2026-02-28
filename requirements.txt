@@ -7,3 +7,6 @@ pip install sentence-transformers
 pip install langchain-chroma
 pip install openai
 pip install streamlit
+pip install mysql-connector-python
+pip install langchain-huggingface
+pip install --upgrade huggingface_hub

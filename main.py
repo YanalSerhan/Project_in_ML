@@ -12,6 +12,7 @@ from knowledgeBase.conversation_state import ConversationState
 from query_type.queryType import queryType
 from sql_retrieval.sql_converter import SQL_converter
 from RAG.rag import RAG
+#from generation.answerGenerator import AnswerGenerator
 
 from pydantic import BaseModel
 from typing import List, Dict, Any
@@ -56,10 +57,11 @@ classification_vectorstore = Chroma(
     embedding_function=embeddings_
 )
 
-query_enhancer = QueryEnhancer("deepseek-ai/deepseek-v3.1")
+query_enhancer = QueryEnhancer("deepseek-ai/deepseek-v3.2")
 #query_typer = queryType("deepseek-ai/deepseek-v3.1")
-sql_converter = SQL_converter("deepseek-ai/deepseek-v3.1")
+sql_converter = SQL_converter("deepseek-ai/deepseek-v3.2")
 KB = ConversationState()
+#answerGen = AnswerGenerator()
 #slot_filler = SlotFiller()
 
 # --------- API Schemas ---------

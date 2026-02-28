@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 from sql_retrieval.table_router import cols_to_str
 from pathlib import Path
 import json
@@ -11,10 +12,11 @@ class SQL_converter:
     self.model_name = model_name
     self.client = OpenAI(
         base_url="https://integrate.api.nvidia.com/v1",
-        api_key=os.getenv("NVIDIA_Converter_KEY")
+        api_key=os.getenv("NVIDIA_Converter_KEY"),
+        timeout=20
     )
 
-
+  @retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5), retry=retry_if_exception_type(Exception))
   def convert(self, query: str, metadata: dict) -> str:
     
     BASE_DIR = Path(__file__).resolve().parent.parent
@@ -62,7 +64,7 @@ RULES:
    `year`, `rank`, `avg`
 
 4. Default SELECT behavior:
-   - Use SELECT * unless the user explicitly asks for specific fields.
+   - Use SELECT * always.
 
 5. Aggregations:
    - Only apply aggregation functions (COUNT, MIN, MAX, etc.) if explicitly requested.

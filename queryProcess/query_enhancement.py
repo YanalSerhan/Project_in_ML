@@ -1,6 +1,7 @@
 import re
 import json
 from openai import OpenAI
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 def clean_query(query):
   # remove nikud
@@ -11,12 +12,20 @@ def clean_query(query):
   query = re.sub(r"\s+", " ", query).strip()
   return query
 
+def to_prompt_str(knowledge_base: dict):
+    prompt_str = ""
+    for key, values in knowledge_base.items():
+        prompt_str += f"{key.capitalize()} mentioned in conversation: {values}\n"
+        prompt_str += f"Most recent {key} (used for vague references): {values[-1] if values else 'None'}\n"
+    return prompt_str
+
 def query_enhancement(query, query_enhancer, conv_state=None):
   print("Entered query_enhancement")
   # clean query
   query = clean_query(query)
 
-  result = query_enhancer.rewrite_and_extract(query)
+  conv_state_str = to_prompt_str(conv_state) if conv_state else ""
+  result = query_enhancer.rewrite_and_extract(query, conv_state_str)
   result = json.loads(result)
   rewritten = result["rewritten_query"]
   metadata = {"course": result["course"], "lecturer": result["lecturer"]}
@@ -26,7 +35,7 @@ def query_enhancement(query, query_enhancer, conv_state=None):
   
   return rewritten, metadata, conv_state
 
-
+@retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5), retry=retry_if_exception_type(Exception))
 def split_query(query: str) -> str:
   prompt = f"""
         You are a helpful assistant that prepares queries that will be sent to a search component.

@@ -6,7 +6,8 @@ db_schemas.tgz
 data/raw/
 /__pycache__
 */__pycache__
-/chat_history
+/chat_history/
+/chat_history/*
 /chroma_db
 /classification_db
 /db_schemas

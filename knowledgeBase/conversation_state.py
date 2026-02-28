@@ -17,13 +17,13 @@ class ConversationState(BaseModel):
         - If the extractor outputs a list, append NEW values.
         - Avoid duplicates.
         """
-        if extracted.get("courses"):
-            for c in extracted["courses"]:
+        if extracted.get("course"):
+            for c in extracted["course"]:
                 if c not in self.courses:
                     self.courses.append(c)
 
-        if extracted.get("lecturers"):
-            for l in extracted["lecturers"]:
+        if extracted.get("lecturer"):
+            for l in extracted["lecturer"]:
                 if l not in self.lecturers:
                     self.lecturers.append(l)
 
@@ -47,8 +47,8 @@ class ConversationState(BaseModel):
         return (
             f"Courses mentioned in conversation: {self.courses}\n"
             f"Lecturers mentioned in conversation: {self.lecturers}\n"
-            f"Years mentioned: {self.years}\n"
-            f"Semesters mentioned: {self.semesters}\n"
+            #f"Years mentioned: {self.years}\n"
+            #f"Semesters mentioned: {self.semesters}\n"
             f"Most recent course (used for vague references): {self.most_recent_course()}\n"
             f"Most recent lecturer: {self.most_recent_lecturer()}\n"
         )

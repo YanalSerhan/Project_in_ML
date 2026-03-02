@@ -197,8 +197,7 @@ REWRITING RULES:
 - If the query is ambiguous, rewrite it in a neutral and generic way without resolving the ambiguity.
 - Do NOT guess missing details.
 - Never infer ownership, perspective, or subject unless it explicitly appears in the user query.
-- Fix spelling mistakes and expand abbreviations only when the meaning is obvious.
-- Example abbreviations: algo -> algorithms, DS -> data structure.
+- Fix spelling mistakes but keep the lecturers names and courses the same.
 - Some lecturer names come with surnames and some don't; keep them exactly as written.
 - Keep the rewritten query short and focused.
 - If the query has references like "the lecturer," "this course," etc., which are ambiguous without context, try to infer them from the knowledge base: {conv_state_str}. If you cannot infer them, keep them as is.

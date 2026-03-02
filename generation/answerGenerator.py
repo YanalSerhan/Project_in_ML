@@ -8,7 +8,6 @@ def generate_answer(
     docs: list,
     no_info: list,
     sql_results: list,
-    KB = None,
     model_name: str = "gpt-4o-mini",  # change to any OpenAI model you prefer
 ) -> str:
     """

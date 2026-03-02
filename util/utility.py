@@ -8,7 +8,7 @@ def fetch_grades(course_name: str, lecturer_name: str):
 
     sql = """
         SELECT `avg`, `year`, semester, moed
-        FROM q
+        FROM grades
         WHERE course = %s
           AND lecture = %s
         ORDER BY year DESC LIMIT 6;

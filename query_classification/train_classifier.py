@@ -135,6 +135,87 @@ sql_queries = [
     "כמה credits מקבלים על קורס Databases?",
     "האם צריך לעשות את ה-prerequisites לפני סמסטר ב?",
     "Show me the ממוצע for Data Structures."
+
+    # --- Course Code (קוד קורס / מספר קורס) ---
+    "מה קוד הקורס של מערכות הפעלה?",
+    "מהו מספר הקורס של מבני נתונים?",
+    "איזה קורס שייך לקוד 234218?",
+    "מה המספר של קורס בינה מלאכותית?",
+    "What is the course code for Artificial Intelligence?",
+    "Find the course number for Linear Algebra.",
+    "List the course codes for all mandatory first-year courses.",
+    "מה ה-course code של אלגוריתמים?",
+    
+    # --- Credit Points (נקודות זכות / נק"ז / credits) ---
+    "כמה נקודות זכות שווה קורס למידת מכונה?",
+    "מה מספר הנק\"ז של חדו\"א 2?",
+    "הצג את כל הקורסים ששווים 4 נקודות זכות",
+    "כמה נקודות אקדמיות נותן קורס פיזיקה 1?",
+    "How many credits is the Data Structures course?",
+    "What is the point value of the Computer Networks course?",
+    "List all courses that are worth more than 3 credit points.",
+    "כמה נק\"ז מקבלים על Software Engineering?",
+    
+    # --- Lecturers (מרצים / מרכז קורס) ---
+    "מי המרצים בקורס אלגוריתמים?",
+    "אילו מרצים מלמדים מבני נתונים השנה?",
+    "מי מעביר את ההרצאות בבסיסי נתונים בסמסטר א?",
+    "מי מרכז את קורס תכנות מונחה עצמים?",
+    "רשימת המרצים של קורס מבוא למדעי המחשב",
+    "Who are the lecturers for Machine Learning?",
+    "List all professors teaching Calculus 1 this semester.",
+    "Who teaches Introduction to Programming?",
+    "Show the lecturers for the Operating Systems course.",
+    "מי ה-lecturers של קורס Computer Vision?",
+
+    "מה המספר מזהה של קורס החומרה?",
+    "מה מזהה הקורס של תכנות מונחה עצמים?",
+    "הצג לי את המספר המזהה של קורס אלגוריתמים",
+    "מה המזהה של קורס מבוא לחומרה?",
+    "למי שייך קורס עם מזהה 234123?",
+
+    # --- "Qualitative" words that actually require a database calculation ---
+    "מה הקורס הכי פופולרי השנה?",  # Translates to: MAX(enrollment)
+    "איזה קורס נחשב הכי קשה לפי ציונים?", # Translates to: MIN(average_grade)
+    "What are the top 3 easiest courses in the CS department?",
+    "מה עשרת הקורסים עם אחוז הנכשלים הגבוה ביותר?",
+    
+    # --- Scheduling, Time, and Logistics ---
+    "איזה קורסים מוצעים בסמסטר קיץ 2024?",
+    
+    
+    # --- Conversational / Slang SQL (Sounds like chat, but is a data pull) ---
+    "אני צריך מספר הסטודנטים שנכשלו בחדו״א 1.",
+    "תביא לי את הממוצע של דני קרן משנה שעברה.",
+    "באיזה סמסטר מלמדים את תכנות מדעי?",
+    "שלח לי את הציונים של סמסטר חורף."
+
+    # --- Number of Examinees (num / מספר נבחנים / ניגשו למבחן) ---
+    "כמה סטודנטים ניגשו למועד א בקורס מבני נתונים?",
+    "מה מספר הנבחנים בחדוא 1 סמסטר חורף 2023 מועד ב?",
+    "כמה תלמידים עשו את המבחן באלגוריתמים השנה?",
+    "הצג את כמות הסטודנטים שניגשו למבחן ברשתות תקשורת מועד א",
+    "האם יותר סטודנטים ניגשו למועד ב או למועד א במערכות הפעלה?",
+    "מה היה מספר המשתתפים בבחינה של קורס מסדי נתונים?",
+    "How many students took the moed A exam in Databases?",
+    "Show me the number of examinees for Machine Learning in 2022.",
+    "What is the total count of students who took the Physics 1 exam?",
+    "Count the test takers for Operating Systems semester B moed A.",
+    "כמה students ניגשו ל-moed B ב-Deep Learning?",
+    "מה ה-num של הנבחנים בקורס AI סמסטר קודם?",
+    
+    # --- List of Grades (grades / רשימת ציונים) ---
+    "תביא לי את רשימת הציונים של מועד א באלגוריתמים.",
+    "הצג את כל הציונים שניתנו במועד ב של קורס בסיסי נתונים.",
+    "אפשר לראות את כל הציונים של קורס מערכות מבוזרות מ-2023?",
+    "מה היו הציונים במועד א של סמסטר אביב בחומרה?",
+    "הוצא לי פלט של כל ציוני הסטודנטים במועד ב' בפיזיקה 2",
+    "List all the grades for the Data Structures exam from last year.",
+    "Show me the list of scores for moed B in Calculus 2.",
+    "Get all student grades for the Computer Vision course in 2023.",
+    "What were the exact grades for the AI final exam in semester A?",
+    "תדפיס לי את ה-grades של מועד א בקורס Networks.",
+    "אני צריך את ה-list של הציונים ממועד B בלינארית."
 ]
 
 semantic_queries = [
@@ -387,6 +468,11 @@ test_cases = [
     ("האם קורס רשתות מעניין?",                      "semantic"),
     ("What is the pass rate for Databases?",         "sql"),
     ("Is Deep Learning suitable for beginners?",     "semantic"),
+    ("מה קוד של הקורס מבוא ללמידה ממוכנת?",              "sql"),
+    ("מי לימד את קורס גרפיקה ממוחשבת?",               "sql"),
+    ("האם קורס אלגוריתמים קשה?",                   "semantic"),
+    ("מה מספר מזהה של קורס החומרה",                      "sql"),
+    ("כמה נקודות זכות קורס עיבוד תמונה?",           "sql"),
 ]
 
 label_map = {1: "sql", 0: "semantic"}

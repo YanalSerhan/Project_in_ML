@@ -1,6 +1,6 @@
 [
   {
-    "table": "q",
+    "table": "grades",
     "type": "grades",
     "content": "This table stores historical course grade statistics by academic year and semester. It is used to answer questions about grades, average grades, performance trends over years, comparisons between years or semesters, highest or lowest averages, ranking of courses, and historical grade data. Typical questions include asking about grades in previous years, average grade in a course, course difficulty, trends over time, and course rankings.",
     "columns": [
@@ -11,6 +11,8 @@
       { "col": "semester", "description": "Semester in which the course was taught(A/B/C)" },
       { "col": "moed", "description": "Exam session(a/b/c/f)" },
       { "col": "avg", "description": "Average grade for the course in that year and semester" },
+      { "col": "num", "description": "Number of students who took the exam in that year and semester and moed" },
+      { "col": "grades", "description": "List of grades for students in the course in that year and semester and moed" },
       { "col": "tag", "description": "Course category(duty/choose)" },
       { "col": "proj", "description": "Whether the course includes a project component" }
     ],
@@ -32,13 +34,20 @@
     "content": "This table stores prerequisite (kdam) relationships between courses. It is used to answer questions about which courses must be taken before another course, required background courses, prerequisite chains, and course dependency structures. Typical questions include asking which courses are required before a given course or what prerequisites a course has.",
     "columns": [
       { "col": "name", "description": "Course name" },
-      { "col": "kdams", "description": "List of prerequisite courses required before taking the course" }
+      { "col": "kdams", "description": "List of prerequisite courses required before taking the course" },
+      {"col": "code", "description": "Unique course code identifier"},
+      {"col": "points", "description": "Number of credit points for the course"},
+      {"col": "lecturer", "description": "Name of the lecturer teaching the course"},
+      {"col": "semester", "description": "List of semesters in which the course is offered"}
     ],
     "example_queries": [
       "מה הקורסים שצריך לפני מבני נתונים",
       "מהם הקדמים של אלגוריתמים",
       "איזה קורסים חובה לפני קורס מסוים",
-      "מה צריך ללמוד לפני קורס מערכות הפעלה"
+      "מה צריך ללמוד לפני קורס מערכות הפעלה",
+      "כמה נקודות זכות יש בקורס מבוא ללמידה ממוכנת",
+      "מי מלמד את קורס גרפיקה ממוחשבת",
+      "מה קוד הקורס של תכנות מונחה עצמים"
     ],
     "negative_scope": [
       "This table does not contain grades or average grade information",

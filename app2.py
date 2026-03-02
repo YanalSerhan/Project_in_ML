@@ -483,7 +483,7 @@ def load_resources():
     db_schemas       = Chroma(persist_directory="db_schemas",      embedding_function=embeddings_class)
     model_id = "deepseek-ai/deepseek-v3.2"
     enhancer = QueryEnhancer(model_id)
-    sql_tool = SQL_converter(model_id)
+    sql_tool = SQL_converter()
     return vectorstore, enhancer, sql_tool, db_schemas
 
 v_store, enhancer, sql_tool, schemas = load_resources()

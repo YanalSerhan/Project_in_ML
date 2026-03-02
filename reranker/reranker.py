@@ -17,6 +17,6 @@ def rerank_documents(query: str, documents: list[Document], model_name: str = "n
     print("Entered Reranker File")
     if not documents:
         return []
-    reranker = NVIDIARerank(model=model_name)
+    reranker = NVIDIARerank(model=model_name, top_n=len(documents))
     reranked_docs = reranker.compress_documents(documents, query)
     return reranked_docs

@@ -24,20 +24,11 @@ from queryProcess.query_enhancement import query_enhancement, split_query, clean
 from sql_retrieval.run_sql import run_sql_query
 from sql_retrieval.clean_sql import clean_result
 from sql_retrieval.table_router import route_query_to_table
+from query_classification.query_classifier_module import QueryClassifier
 
-# 1. Get the absolute path to the directory containing THIS script (query_enhancement)
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# load logistic regression model for query classification
+clf = QueryClassifier()
 
-# 2. Build the path: go up one level ('..'), then into the 'nicknames' folder
-NICKNAMES_FILE_PATH = os.path.join(CURRENT_DIR, '..', 'nicknames', 'course_nicknames.json')
-
-# 3. Safely load the file, with a fallback just in case the path is slightly off
-try:
-    with open(NICKNAMES_FILE_PATH, 'r', encoding='utf-8') as f:
-        NICKNAMES_MAP = json.load(f)
-except FileNotFoundError:
-    print(f"⚠️ Warning: Could not find the file at {NICKNAMES_FILE_PATH}")
-    NICKNAMES_MAP = {} # Fallback to empty dict so the code doesn't completely crash
 
 def build_vector_filters(metadata):
     """
@@ -100,8 +91,8 @@ def semantic_search(subquery, vectorstore, metadata):
     for course in courses:
         if course in subquery:
             # filter by nickname
-            official_name = NICKNAMES_MAP.get(course, course)
-            exprs.append({"course_name": {"$eq": official_name}})
+            #official_name = NICKNAMES_MAP.get(course, course)
+            exprs.append({"course_name": {"$eq": course}})
 
     for lecturer in lecturers:
         if lecturer in subquery:
@@ -121,6 +112,8 @@ def semantic_search(subquery, vectorstore, metadata):
     else:
         # Proper AND filter
         where = {"$and": exprs}
+    
+    print("Applying filter to vector search:", where)
 
     # Perform search with filter, return top 10 results
     return vectorstore.similarity_search(
@@ -128,7 +121,7 @@ def semantic_search(subquery, vectorstore, metadata):
             k=15,
             filter=where
         )
-
+"""
 def classify_query(query: str, classification_vectorstore):
     results = classification_vectorstore.similarity_search_with_score(query, k=1)
 
@@ -139,8 +132,12 @@ def classify_query(query: str, classification_vectorstore):
 
     # return the same type as the closest query
     return doc.metadata["route"]
+"""
 
-def enhanced_retrieve(query, query_enhancer, vectorstore, classification_vectorstore, sql_converter, conv_state=None, db_schemas=None):
+def classify_query(query: str):
+    return clf.classify(query)["type"]
+
+def enhanced_retrieve(query, query_enhancer, vectorstore, sql_converter, conv_state=None, db_schemas=None):
     print("Entered enhanced_retrieve")
     
     # --- ENHANCEMENT ---
@@ -165,7 +162,7 @@ def enhanced_retrieve(query, query_enhancer, vectorstore, classification_vectors
     results_invalid = []
 
     for subquery in splitted:
-        qtype = classify_query(subquery, classification_vectorstore)
+        qtype = classify_query(subquery)
         print(f"Subquery: {subquery} | Type: {qtype}")
         if qtype == "sql":
             print("Processing SQL subquery:", subquery)
@@ -185,10 +182,22 @@ def enhanced_retrieve(query, query_enhancer, vectorstore, classification_vectors
             continue
 
         result = semantic_search(subquery, vectorstore, metadata)
+        print(f"Semantic search results for subquery '{subquery}':", len(result))
+        print()
         if result:
           results_valid.append(result)
         else:
           results_invalid.append(subquery)
 
+    print("Final results:")
+    for i, result in enumerate(results_valid):
+        print(f"Valid result {i+1} length: {len(result)}")
+    print("Invalid:", len(results_invalid))
+    print("SQL results:", len(sql_results))
+    print()
 
+    # flatten results_valid
+    results_valid = [doc for sublist in results_valid for doc in sublist]
+    print("Flattened valid results length:", len(results_valid))
+    
     return results_valid, results_invalid, sql_results, conv_state

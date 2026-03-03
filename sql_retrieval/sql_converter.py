@@ -13,12 +13,12 @@ class SQL_converter:
         self.model_name = model_name
         self.client = OpenAI(
             api_key=os.getenv("OPENAI_API_KEY"),
-            timeout=20
+            timeout=30
         )
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        stop=stop_after_attempt(5),
+        stop=stop_after_attempt(7),
         retry=retry_if_exception_type(Exception)
     )
     def convert(self, query: str, metadata: dict) -> str:

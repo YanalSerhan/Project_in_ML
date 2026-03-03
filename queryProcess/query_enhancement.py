@@ -37,9 +37,11 @@ def to_prompt_str(knowledge_base: dict):
 def update_conv_state(conv_state, metadata):
     for key, value in metadata.items():
         if key in conv_state:
-            conv_state[key].append(value)
+              if value is not None:
+                conv_state[key].append(value)
         else:
-            conv_state[key] = [value]
+            if value is not None:
+              conv_state[key] = [value]
 
 def query_enhancement(query, query_enhancer, conv_state=None):
   print("Entered query_enhancement")

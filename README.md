@@ -42,8 +42,13 @@ This system processes dual-intent queries by combining **Unstructured Retrieval*
     MYSQL_DB="Project_ML_DB"
     ```
 4.  **Database Setup (One-time Only)**:
-   Before running the system, you must initialize the knowledge base by processing the raw data into vector databases.
-   Run the following notebooks: 'create_vectorstores.ipynb' and 'offline_processing\JSON2SQL.ipynb'.
+   Before running the system, you must initialize the knowledge base by processing the data into vector databases and MySQL database.
+   Open MySQL and run this command: 
+   ```sql
+   CREATE DATABASE Project_ML_DB;
+   USE Project_ML_DB;
+   ```
+   Run the following files: 'setup.py' and 'offline_processing\sql_tables_setup.py'.
 
 ## Execution (How to Run)
 1. **Step 1: Create a Virtual Environment (Recommended)**

@@ -3,7 +3,11 @@ plan.txt
 classification_db.tgz
 vectorstore_index.tgz
 db_schemas.tgz
-data/raw/
+data/raw/Tcomments.json
+data/raw/Tgrades.json
+data/raw/TgradesSemesters.json
+data/raw/Tquestions.json
+data/raw/Explanation.txt
 /__pycache__
 */__pycache__
 /chat_history/
@@ -11,3 +15,4 @@ data/raw/
 /chroma_db
 /classification_db
 /db_schemas
+/query_classification/training_params_explanation.txt

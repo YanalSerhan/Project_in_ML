@@ -49,6 +49,8 @@ def query_enhancement(query, query_enhancer, conv_state=None):
   query = clean_query(query)
 
   conv_state_str = to_prompt_str(conv_state) if conv_state else ""
+  print("Conversation state string for prompt:", conv_state_str)
+  print("\n")
   result = query_enhancer.rewrite_and_extract(query, conv_state_str)
   result = json.loads(result)
   rewritten = result["rewritten_query"]
@@ -62,8 +64,8 @@ def query_enhancement(query, query_enhancer, conv_state=None):
       metadata["course"][i] = new_name
 
   if conv_state:
-    print("Updating conversation state with new metadata:", conv_state)
     update_conv_state(conv_state, metadata)
+    print("Updating conversation state with new metadata:", conv_state)
   
   return rewritten, metadata, conv_state
 

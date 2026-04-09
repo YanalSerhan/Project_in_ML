@@ -186,34 +186,38 @@ class QueryEnhancer:
       prompt = f"""
 You are a query rewriting and information extraction system.
 
+You are given:
+- A user query
+- Conversation context metadata: {conv_state_str}
+
 Your tasks:
 
 1) Rewrite the user query to be clearer, more explicit, and easier for a retrieval system to understand.
-2) Extract the course name(s) and lecturer name(s) explicitly mentioned in the query.
+2) Extract the course name(s) and lecturer name(s) explicitly mentioned in the ORIGINAL query only.
 
+---------------------
 REWRITING RULES:
 - Keep the meaning exactly the same.
-- Do NOT add new information or assumptions.
-- If the query is ambiguous, rewrite it in a neutral and generic way without resolving the ambiguity.
-- Do NOT guess missing details.
-- Never infer ownership, perspective, or subject unless it explicitly appears in the user query.
-- Fix spelling mistakes but keep the lecturers names and courses the same.
-- Some lecturer names come with surnames and some don't; keep them exactly as written.
+- Do NOT add new information that is not grounded in the query or the provided context.
+- If the query contains ambiguous references (e.g., "the course", "he", "his", "this course"):
+  → Resolve them using the conversation context metadata.
+  → Replace them explicitly with the correct course or lecturer from the context.
+- If the query is already explicit, do not change it unnecessarily.
+- Do NOT guess anything beyond the given context.
+- Fix spelling mistakes but keep course and lecturer names exactly as written.
 - Keep the rewritten query short and focused.
-- If the query has references like "the lecturer," "this course," etc., which are ambiguous without context, try to infer them from the knowledge base: {conv_state_str}. If you cannot infer them, keep them as is.
+- Return the rewritten query in the same language as the input.
 - Do NOT answer the query.
-- Do NOT provide explanations.
-- Return the output in the same language as the input.
 
+---------------------
 EXTRACTION RULES:
-- Extract ONLY course name(s) and lecturer name(s) explicitly mentioned in the query.
-- Extract ONLY course names and lecturer names. Not 'course AI', only 'AI' if that's how it's mentioned.
+- Extract ONLY course name(s) and lecturer name(s explicitly mentioned in the ORIGINAL query.
+- Do NOT include entities that were added during rewriting.
 - Do NOT infer or guess anything.
 - If no course is mentioned, return an empty list.
 - If no lecturer is mentioned, return an empty list.
-- Some course names may include versions (e.g., Algebra B); extract them fully.
-- Some lecturer names may include surnames or only first names; extract exactly what appears.
 
+---------------------
 Output format (STRICT JSON only, no explanations):
 
 {{
@@ -222,6 +226,7 @@ Output format (STRICT JSON only, no explanations):
   "lecturer": []
 }}
 
+---------------------
 User query:
 "{query}"
 """

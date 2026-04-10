@@ -29,11 +29,17 @@ This system processes dual-intent queries by combining **Unstructured Retrieval*
     ```bash
     git clone [https://github.com/YanalSerhan/Project_in_ML.git](https://github.com/YanalSerhan/Project_in_ML.git)
     ```
-2.  **Install dependencies**:
+2. **Create a Virtual Environment (Recommended)**
+   Creating a virtual environment ensures that the project dependencies do not interfere with other Python projects on your system.
+   ```bash
+   python -m venv venv
+   .\venv\Scripts\activate
+   ```
+3.  **Install dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
-3.  **Configure Environment**:
+4.  **Configure Environment**:
     Create a `.env` file with your API keys:
     ```env
     NVIDIA_API_KEY=your_key_here
@@ -41,7 +47,7 @@ This system processes dual-intent queries by combining **Unstructured Retrieval*
     DB_PASSWORD=your_db_password
     MYSQL_DB="Project_ML_DB"
     ```
-4.  **Database Setup (One-time Only)**:
+5.  **Database Setup (One-time Only)**:
    Before running the system, you must initialize the knowledge base by processing the data into vector databases and MySQL database.
    Open MySQL and run this command: 
    ```sql
@@ -54,7 +60,6 @@ This system processes dual-intent queries by combining **Unstructured Retrieval*
 1. **Step 1: Create a Virtual Environment (Recommended)**
    Creating a virtual environment ensures that the project dependencies do not interfere with other Python projects on your system.
    ```bash
-   python -m venv venv
    .\venv\Scripts\activate
    ```
    **Step 2: Start the Application**
